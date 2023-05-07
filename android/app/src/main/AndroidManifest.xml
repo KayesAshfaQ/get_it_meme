@@ -1,5 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.shallowcode.get_it_meme">
+
+    <uses-permission android:name="android.permission.INTERNET" />
    <application
         android:label="GetIt Meme"
         android:name="${applicationName}"

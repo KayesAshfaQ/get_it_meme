@@ -124,10 +124,10 @@ class _HomePageViewState extends State<HomePageView> {
               onPressed: () {
                 memeCount--;
                 if (memeCount <= 0) {
-                  memeCount = 50;
+                  memeCount = memeMaxCount - 1;
                 }
                 setState(() {});
-                print('next btn pressed');
+                print('pre btn pressed ::: $memeCount');
               },
               tooltip: 'Increment',
               child: const Icon(Icons.skip_previous),
@@ -139,7 +139,7 @@ class _HomePageViewState extends State<HomePageView> {
                   memeCount = 0;
                 }
                 setState(() {});
-                print('next btn pressed');
+                print('next btn pressed ::: $memeCount');
               },
               tooltip: 'Increment',
               child: const Icon(Icons.skip_next),

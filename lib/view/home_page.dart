@@ -50,67 +50,70 @@ class _HomePageViewState extends State<HomePageView> {
       appBar: AppBar(
         title: const Text('Get-It Meme'),
       ),
-      body: Container(
-        child: memes.isNotEmpty
-            ? Padding(
+      body: RefreshIndicator(
+        onRefresh: () async {
+          callApi();
+        },
+        child: Container(
+          child: memes.isNotEmpty
+              ? ListView(
                 padding: const EdgeInsets.all(16),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Subreddit: ${memes[memeCount].subreddit}',
-                      style: Theme.of(context).textTheme.bodyLarge,
+                //mainAxisAlignment: MainAxisAlignment.start,
+                //crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Subreddit: ${memes[memeCount].subreddit}',
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Author: ${memes[memeCount].author}',
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Title: ${memes[memeCount].title}',
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                  const SizedBox(height: 8),
+                  Container(
+                    constraints: BoxConstraints(
+                      maxHeight: height * 0.7,
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Author: ${memes[memeCount].author}',
-                      style: Theme.of(context).textTheme.bodyLarge,
+                    //height: height * 0.7,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Title: ${memes[memeCount].title}',
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                    const SizedBox(height: 8),
-                    Container(
-                      constraints: BoxConstraints(
-                        maxHeight: height * 0.7,
-                      ),
-                      //height: height * 0.7,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: memes[memeCount].url != null
-                          ? Center(
-                              child: CachedNetworkImage(
-                                imageUrl: memes[memeCount].url ?? '',
-                                progressIndicatorBuilder:
-                                    (context, url, downloadProgress) =>
-                                        CircularProgressIndicator(
-                                  value: downloadProgress.progress,
-                                ),
-                                errorWidget: (context, url, error) =>
-                                    const Icon(Icons.error),
-                                placeholderFadeInDuration: const Duration(
-                                  milliseconds: 250,
-                                ),
-                                fadeInDuration: const Duration(
-                                  milliseconds: 0,
-                                ),
-                                fadeOutDuration: const Duration(
-                                  milliseconds: 0,
-                                ),
+                    child: memes[memeCount].url != null
+                        ? Center(
+                            child: CachedNetworkImage(
+                              imageUrl: memes[memeCount].url ?? '',
+                              progressIndicatorBuilder:
+                                  (context, url, downloadProgress) =>
+                                      CircularProgressIndicator(
+                                value: downloadProgress.progress,
                               ),
-                            )
-                          : const SizedBox(),
-                    ),
-                  ],
-                ),
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.error),
+                              placeholderFadeInDuration: const Duration(
+                                milliseconds: 250,
+                              ),
+                              fadeInDuration: const Duration(
+                                milliseconds: 0,
+                              ),
+                              fadeOutDuration: const Duration(
+                                milliseconds: 0,
+                              ),
+                            ),
+                          )
+                        : const SizedBox(),
+                  ),
+                ],
               )
-            : const Center(
-                child: CircularProgressIndicator(),
-              ),
+              : const Center(
+                  child: CircularProgressIndicator(),
+                ),
+        ),
       ),
       floatingActionButton: SizedBox(
         width: width * 0.3,

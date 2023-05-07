@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it_meme/domain/models/meme_element.dart';
 
@@ -42,7 +43,6 @@ class _HomePageViewState extends State<HomePageView> {
 
   @override
   Widget build(BuildContext context) {
-
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
 
@@ -53,27 +53,27 @@ class _HomePageViewState extends State<HomePageView> {
       body: Container(
         child: memes.isNotEmpty
             ? Padding(
-          padding: const EdgeInsets.all(16),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Subreddit: ${memes[memeCount].subreddit}',
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Author: ${memes[memeCount].author}',
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),const SizedBox(height: 8),
-                  Text(
-                    'Title: ${memes[memeCount].title}',
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                  const SizedBox(height: 8),
-                  Center(
-                    child: Container(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Subreddit: ${memes[memeCount].subreddit}',
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Author: ${memes[memeCount].author}',
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Title: ${memes[memeCount].title}',
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                    const SizedBox(height: 8),
+                    Container(
                       constraints: BoxConstraints(
                         maxHeight: height * 0.7,
                       ),
@@ -82,50 +82,67 @@ class _HomePageViewState extends State<HomePageView> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: memes[memeCount].url != null
-                          ? Image.network(
-                              memes[memeCount].url ?? '',
-                              loadingBuilder: (BuildContext context,
-                                  Widget child,
-                                  ImageChunkEvent? loadingProgress) {
-                                if (loadingProgress == null) {
-                                  return child;
-                                }
-                                return Center(
-                                  child: CircularProgressIndicator(
-                                    value: loadingProgress.expectedTotalBytes !=
-                                            null
-                                        ? loadingProgress
-                                                .cumulativeBytesLoaded /
-                                            loadingProgress.expectedTotalBytes!
-                                        : null,
-                                  ),
-                                );
-                              },
+                          ? Center(
+                              child: CachedNetworkImage(
+                                imageUrl: memes[memeCount].url ?? '',
+                                progressIndicatorBuilder:
+                                    (context, url, downloadProgress) =>
+                                        CircularProgressIndicator(
+                                  value: downloadProgress.progress,
+                                ),
+                                errorWidget: (context, url, error) =>
+                                    const Icon(Icons.error),
+                                placeholderFadeInDuration: const Duration(
+                                  milliseconds: 250,
+                                ),
+                                fadeInDuration: const Duration(
+                                  milliseconds: 0,
+                                ),
+                                fadeOutDuration: const Duration(
+                                  milliseconds: 0,
+                                ),
+                              ),
                             )
                           : const SizedBox(),
                     ),
-                  ),
-                ],
-              ),
-            )
+                  ],
+                ),
+              )
             : const Center(
                 child: CircularProgressIndicator(),
               ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // TODO 7: Use set state to update the visibleMeme
-          memeCount++;
-          if (memeCount >= memeMaxCount) {
-            memeCount = 0;
-          }
-          setState(() {
-
-          });
-          print('next btn pressed');
-        },
-        tooltip: 'Increment',
-        child: const Icon(Icons.skip_next),
+      floatingActionButton: SizedBox(
+        width: width * 0.3,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            FloatingActionButton.small(
+              onPressed: () {
+                memeCount--;
+                if (memeCount <= 0) {
+                  memeCount = 50;
+                }
+                setState(() {});
+                print('next btn pressed');
+              },
+              tooltip: 'Increment',
+              child: const Icon(Icons.skip_previous),
+            ),
+            FloatingActionButton.small(
+              onPressed: () {
+                memeCount++;
+                if (memeCount >= memeMaxCount) {
+                  memeCount = 0;
+                }
+                setState(() {});
+                print('next btn pressed');
+              },
+              tooltip: 'Increment',
+              child: const Icon(Icons.skip_next),
+            ),
+          ],
+        ),
       ),
     );
   }
